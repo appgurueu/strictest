@@ -1,0 +1,2 @@
+# Which action to take when strictness is violated
+strictest.action (Strictness Violation Action) enum error error,log
