@@ -18,14 +18,9 @@ function str_mt.__index(_, key)
 	return func
 end
 
--- Completely disable string-to-number coercion
+-- Disable string-to-number coercion as much as possible
 
-local arithmetic_ops = {"add", "sub", "mul", "div", "mod", "pow", "unm"}
-for _, op in pairs(arithmetic_ops) do
-	str_mt["__" .. op] = function()
-		action"attempt to perform arithmetic on a string value"
-	end
-end
+-- Setting the metamethods unfortunately doesn't work - Lua ignores them
 
 -- Override string methods to reject anything that isn't a string
 for name, func in pairs(string) do
