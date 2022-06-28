@@ -59,3 +59,52 @@ for name, func in pairs(math) do
 		end
 	end
 end
+
+-- `math.random` strictness
+
+-- Signed 32-bit int check
+local function int32(num)
+	if num ~= num or math.abs(num) == math.huge then
+		action"expected 32-bit signed int, got nan or inf"
+	elseif num % 1 ~= 0 then
+		action"expected 32-bit signed int, got number with fractional part"
+	elseif num >= 2^31 then
+		action"expected 32-bit signed int, got too large number"
+	elseif num < -2^31 then
+		action"expected 32-bit signed int, got too small number"
+	end
+end
+
+-- PUC Lua uses 32-bit ints internally for math.random calls with intervals:
+--[[
+	For one argument:
+
+	int u = luaL_checkint(L, 1);
+	luaL_argcheck(L, 1<=u, 1, "interval is empty");
+	lua_pushnumber(L, floor(r*u)+1);  /* int between 1 and `u' */
+
+	For two arguments:
+
+	int l = luaL_checkint(L, 1);
+	int u = luaL_checkint(L, 2);
+	luaL_argcheck(L, l<=u, 2, "interval is empty");
+	lua_pushnumber(L, floor(r*(u-l+1))+l);  /* int between `l' and `u' */
+]]
+local math_random = math.random
+function math.random(...)
+	local n = select("#", ...)
+	if n == 0 then
+		return math_random()
+	elseif n == 1 then
+		local a = ...
+		int32(a)
+		return math_random(a)
+	elseif n == 2 then
+		local a, b = ...
+		int32(a); int32(b) -- limits must be inside int32 bounds
+		int32(b - a + 1) -- range may not overflow
+		return math_random(a, b)
+	else
+		action"expected at most 2 arguments in call to math.random"
+	end
+end
