@@ -18,6 +18,17 @@ Particularly useful when writing new mods that don't target older Minetest versi
 
 Potentially partially redundant with the `deprecated_lua_api_handling` setting.
 
+## Usage
+
+Simply install, enable & configure the mod and you're good to go.
+
+### `mod.conf`
+
+Consider optionally depending on `__strictest` to ensure that runtime strictness is available at load-time.
+
+Currently this isn't necessary since the leading double underscores (`__`) already ensure that `__strictest` loads first,
+but it might become necessary in the future if mod load order is changed to not use reverse alphabetical order.
+
 ## License
 
 Written by Lars Müller and licensed under the MIT license.
