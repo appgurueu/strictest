@@ -4,7 +4,9 @@
 
 *Strictest* consists of two components:
 
-* Lua strictness: Will disallow string indexing and string - number coercion.
+* Lua strictness:
+  * Disallows string indexing misses: `("...").something` will throw an error if there is no `string.something` to prevent accidental use of strings where tables are expected
+  * Disables string - number coercion where possible
 * Minetest strictness: Disallows usage of deprecated APIs & using entity-only or player-only methods on the wrong type of object.
 
 Particularly useful when writing new mods that don't target older Minetest versions.
