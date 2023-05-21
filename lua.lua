@@ -101,6 +101,7 @@ function math.random(...)
 		return math_random(a)
 	elseif n == 2 then
 		local a, b = ...
+		assert(a <= b, "interval is empty") -- LuaJIT accepts empty intervals, but PUC Lua 5.1 doesn't
 		int32(a); int32(b) -- limits must be inside int32 bounds
 		int32(b - a + 1) -- range may not overflow
 		return math_random(a, b)
