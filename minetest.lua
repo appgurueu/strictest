@@ -206,6 +206,19 @@ deprecated(ItemStackMT, "stack:", {
 	set_metadata = "get_meta()",
 })
 
+local set_player_privs = minetest.set_player_privs
+function minetest.set_player_privs(name, privs)
+	assert(type(privs) == "table", "privs should be a table")
+	for _, v in pairs(privs) do
+		if v == false then
+			action"`false` value in `privs`, this is almost certainly a bug granting a privilege rather than revoking it"
+		elseif v ~= true then
+			action"non-`true` value in `privs` set" -- code smell
+		end
+	end
+	return set_player_privs(name, privs)
+end
+
 --[[
 	TODO: implement the following deprecations:
 	- Tile def `image` field (replaced by `name`)
