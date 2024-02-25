@@ -130,7 +130,13 @@ minetest.register_on_joinplayer(function(player)
 		set_attribute = "get_meta()",
 		get_sky_color = "get_sky(as_table)"
 	})
-	only_def_expected(ObjRef, "set_sky", "sky params")
+	local ObjRef_set_sky = ObjRef.set_sky
+	function ObjRef:set_sky(...)
+		if select("#", ...) ~= 1 then
+			action("wrong number of arguments, expected exactly 1")
+		end
+		return ObjRef_set_sky(self, ...)
+	end
 	local ObjRef_get_sky = ObjRef.get_sky
 	function ObjRef:get_sky(as_table)
 		if not as_table then
